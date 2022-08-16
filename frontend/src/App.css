@@ -41,6 +41,12 @@
   flex-direction: row;
 }
 
+/* #whiteBoardModal {
+  display: flex;
+  justify-content: 'center';
+  align-items: 'center';
+} */
+
 #social-container li {
   list-style-type: none;
 }
