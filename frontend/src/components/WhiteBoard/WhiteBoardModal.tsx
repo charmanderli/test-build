@@ -1,5 +1,6 @@
 import { Modal, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from '@chakra-ui/react';
 import React from 'react';
+import useCoveyAppState from '../../hooks/useCoveyAppState';
 import './ContainerStyle.css';
 import WhiteBoardContainer from './WhiteBoardContainer';
 // type WhiteBoardModalState = {
@@ -24,6 +25,7 @@ export default function WhiteBoardModal({ isOpen, closeModal }: WhiteBoardModalP
   //       penSize: 5,
   //     };
   //   }
+  const { socket } = useCoveyAppState();
 
   return (
     <Modal
@@ -35,7 +37,7 @@ export default function WhiteBoardModal({ isOpen, closeModal }: WhiteBoardModalP
       <ModalContent>
         <ModalHeader>ulalalala</ModalHeader>
         <ModalCloseButton />
-        <WhiteBoardContainer />
+        <WhiteBoardContainer socket={socket} />
       </ModalContent>
     </Modal>
   );

@@ -1,24 +1,34 @@
 import React from 'react';
-import { io } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
+import useCoveyAppState from '../../hooks/useCoveyAppState';
 import './BoardStyle.css';
+
+
 
 type BoardProps = {
   penSize: number;
   penColor: string;
+  socket: any
 };
 // type BoardStates = {};
-class Board extends React.Component<BoardProps, Record<string, never>> {
+class Board extends React.Component<BoardProps, Record<string, any>> {
   timeout: NodeJS.Timeout;
 
-  // socket = io("http://localhost:3000", { transports: ["websocket"] });
-  socket = io('http://localhost:3000');
+  private canvas: HTMLCanvasElement;
 
   isDrawing = false;
+
+  private _socket: Socket;
 
   ctx: CanvasRenderingContext2D;
 
   constructor(props: BoardProps) {
     super(props);
+
+    const { socket } = this.props;
+    // this._socket = io('http://localhost:3000');
+
+    this._socket = socket;
     const initData = (data: string) => {
       //   const root: Board = this;
       const interval = setInterval(() => {
@@ -42,8 +52,11 @@ class Board extends React.Component<BoardProps, Record<string, never>> {
       }, 200);
       return initData;
     };
-    this.socket.on('canvas-data', (data: any) => initData(data));
+
+    this._socket.on('canvas-data', (data: any) => initData(data));
+
   }
+
 
   componentDidMount() {
     this.drawOnCanvas();
@@ -57,6 +70,22 @@ class Board extends React.Component<BoardProps, Record<string, never>> {
   // var socket = io.connect("http://localhost:5000");
   // const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
   // const socket: Socket<ServerTo
+
+  handleClearBoard() {
+    const canvas = document.getElementById("board") as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+    if (this.timeout !== undefined) {
+      clearTimeout(this.timeout);
+    }
+    this.timeout = setTimeout(() => {
+      const base64ImageData = canvas.toDataURL('image/png');
+      this._socket.emit('canvas-data', base64ImageData);
+    }, 1000);
+  }
 
   drawOnCanvas() {
     const canvas = document.getElementById('board') as HTMLCanvasElement;
@@ -83,7 +112,7 @@ class Board extends React.Component<BoardProps, Record<string, never>> {
       }
       this.timeout = setTimeout(() => {
         const base64ImageData = canvas.toDataURL('image/png');
-        this.socket.emit('canvas-data', base64ImageData);
+        this._socket.emit('canvas-data', base64ImageData);
       }, 1000);
     };
 
@@ -119,6 +148,7 @@ class Board extends React.Component<BoardProps, Record<string, never>> {
   render() {
     return (
       <div className='sketch' id='sketch'>
+        <button type='button' onClick={() => this.handleClearBoard()}>Clear board</button>
         <canvas className='board' id='board' />
       </div>
     );

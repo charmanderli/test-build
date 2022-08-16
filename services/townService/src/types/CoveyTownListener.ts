@@ -46,4 +46,8 @@ export default interface CoveyTownListener {
    * @param message the new chat message
    */
   onChatMessage(message: ChatMessage): void;
+
+  onBoardChanged(data: any): void;
+  
+  onBoardClear():void;
 }

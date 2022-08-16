@@ -228,6 +228,17 @@ function townSocketAdapter(socket: Socket): CoveyTownListener {
     onChatMessage(message: ChatMessage){
       socket.emit('chatMessage', message);
     },
+
+    onBoardChanged(data: any){
+      socket.emit("canvas-data", data);
+      console.log("board change");
+    }
+
+    onBoardClear(){
+      socket.emit("clear", "clear");
+    }
+
+
   };
 }
 
@@ -271,5 +282,15 @@ export function townSubscriptionHandler(socket: Socket): void {
   // location, inform the CoveyTownController
   socket.on('playerMovement', (movementData: UserLocation) => {
     townController.updatePlayerLocation(s.player, movementData);
+  });
+
+  socket.on("canvas-data", (data:any) => {
+    socket.broadcast.emit("canvas-data", data);
+    console.log("board change");
+  });
+
+  socket.on("clear", () => {
+    socket.broadcast.emit("clear", "clear");
+    console.log("clear");
   });
 }
