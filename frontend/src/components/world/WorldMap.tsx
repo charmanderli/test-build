@@ -10,6 +10,7 @@ import usePlayerMovement from '../../hooks/usePlayerMovement';
 import usePlayersInTown from '../../hooks/usePlayersInTown';
 import SocialSidebar from '../SocialSidebar/SocialSidebar';
 import { Callback } from '../VideoCall/VideoFrontend/types';
+import WhiteBoardModal from '../WhiteBoard/WhiteBoardModal';
 import NewConversationModal from './NewCoversationModal';
 
 // Original inspiration and code from:
@@ -60,12 +61,15 @@ class CoveyGameScene extends Phaser.Scene {
 
   private setNewConversation: (conv: ConversationArea) => void;
 
+  private setOpenWhiteBoardModal: (openWhiteBoard: boolean) => void;
+
   private _onGameReadyListeners: Callback[] = [];
 
   constructor(
     video: Video,
     emitMovement: (loc: UserLocation) => void,
     setNewConversation: (conv: ConversationArea) => void,
+    setOpenWhiteBoardModal: (open: boolean) => void,
     myPlayerID: string,
   ) {
     super('PlayGame');
@@ -73,6 +77,7 @@ class CoveyGameScene extends Phaser.Scene {
     this.emitMovement = emitMovement;
     this.myPlayerID = myPlayerID;
     this.setNewConversation = setNewConversation;
+    this.setOpenWhiteBoardModal = setOpenWhiteBoardModal;
   }
 
   preload() {
@@ -299,7 +304,7 @@ class CoveyGameScene extends Phaser.Scene {
         this.lastLocation.rotation = primaryDirection || 'front';
         this.lastLocation.moving = isMoving;
         if (this.currentConversationArea) {
-          if(this.currentConversationArea.conversationArea){
+          if (this.currentConversationArea.conversationArea) {
             this.lastLocation.conversationLabel = this.currentConversationArea.label;
           }
           if (
@@ -459,6 +464,14 @@ class CoveyGameScene extends Phaser.Scene {
         false,
       ) as Phaser.Types.Input.Keyboard.CursorKeys,
     );
+    // this.cursors.push(
+    //   this.input.keyboard.addKeys(
+    //     {
+    //       WB: Phaser.Input.Keyboard.KeyCodes.F1,
+    //     },
+    //     false,
+    //   ) as Phaser.Types.Input.Keyboard.CursorKeys,
+    // );
 
     // Create a sprite with physics enabled via the physics system. The image used for the sprite
     // has a bit of whitespace, so I'm using setSize & setOffset to control the size of the
@@ -511,13 +524,24 @@ class CoveyGameScene extends Phaser.Scene {
         const conversationLabel = conversationSprite.name;
         const conv = this.conversationAreas.find(area => area.label === conversationLabel);
         this.currentConversationArea = conv;
+        if (cursorKeys.shift.isDown) {
+          console.log('shift pressed');
+          this.setOpenWhiteBoardModal(true);
+        }
         if (conv?.conversationArea) {
           this.infoTextBox?.setVisible(false);
           const localLastLocation = this.lastLocation;
-          if(localLastLocation && localLastLocation.conversationLabel !== conv.conversationArea.label){
+          if (
+            localLastLocation &&
+            localLastLocation.conversationLabel !== conv.conversationArea.label
+          ) {
             localLastLocation.conversationLabel = conv.conversationArea.label;
             this.emitMovement(localLastLocation);
           }
+          // if (cursorKeys.shift.isDown) {
+          //   console.log('shift pressed');
+          //   this.setOpenWhiteBoardModal(true);
+          // }
         } else {
           if (cursorKeys.space.isDown) {
             const newConversation = new ConversationArea(
@@ -600,20 +624,15 @@ class CoveyGameScene extends Phaser.Scene {
 
     // Help text that has a "fixed" position on the screen
     this.add
-      .text(
-        16,
-        16,
-        `Arrow keys to move`,
-        {
-          font: '18px monospace',
-          color: '#000000',
-          padding: {
-            x: 20,
-            y: 10,
-          },
-          backgroundColor: '#ffffff',
+      .text(16, 16, `Arrow keys to move`, {
+        font: '18px monospace',
+        color: '#000000',
+        padding: {
+          x: 20,
+          y: 10,
         },
-      )
+        backgroundColor: '#ffffff',
+      })
       .setScrollFactor(0)
       .setDepth(30);
 
@@ -631,7 +650,7 @@ class CoveyGameScene extends Phaser.Scene {
   pause() {
     if (!this.paused) {
       this.paused = true;
-      if(this.player){
+      if (this.player) {
         this.player?.sprite.anims.stop();
         const body = this.player.sprite.body as Phaser.Physics.Arcade.Body;
         body.setVelocity(0);
@@ -659,6 +678,7 @@ export default function WorldMap(): JSX.Element {
   const conversationAreas = useConversationAreas();
   const [gameScene, setGameScene] = useState<CoveyGameScene>();
   const [newConversation, setNewConversation] = useState<ConversationArea>();
+  const [openWhiteBoardModal, setOpenWhiteBoardModal] = useState(false);
   const playerMovementCallbacks = usePlayerMovement();
   const players = usePlayersInTown();
 
@@ -683,7 +703,13 @@ export default function WorldMap(): JSX.Element {
 
     const game = new Phaser.Game(config);
     if (video) {
-      const newGameScene = new CoveyGameScene(video, emitMovement, setNewConversation, myPlayerID);
+      const newGameScene = new CoveyGameScene(
+        video,
+        emitMovement,
+        setNewConversation,
+        setOpenWhiteBoardModal,
+        myPlayerID,
+      );
       setGameScene(newGameScene);
       game.scene.add('coveyBoard', newGameScene, true);
       video.pauseGame = () => {
@@ -742,13 +768,42 @@ export default function WorldMap(): JSX.Element {
     return <></>;
   }, [video, newConversation, setNewConversation]);
 
+  // const whiteBoardModalOpen = openWhiteBoardModal;
+  useEffect(() => {
+    if (openWhiteBoardModal) {
+      video?.pauseGame();
+    } else {
+      video?.unPauseGame();
+    }
+  }, [video, openWhiteBoardModal]);
+
+  const newWhiteBoardModal = useMemo(() => {
+    if (openWhiteBoardModal) {
+      video?.pauseGame();
+      return (
+        <WhiteBoardModal
+          isOpen={openWhiteBoardModal}
+          closeModal={() => {
+            video?.unPauseGame();
+            setOpenWhiteBoardModal(false);
+          }}
+        />
+      );
+    }
+    return <></>;
+  }, [video, openWhiteBoardModal]);
   return (
     <div id='app-container'>
       {newConversationModal}
+      {/* <div id='whiteBoardModal'>{newWhiteBoardModal}</div> */}
+      {newWhiteBoardModal}
       <div id='map-container' />
       <div id='social-container'>
         <SocialSidebar />
       </div>
+      {/* <div id='whiteboard-container'>
+        <WhiteBoardContainer />
+      </div> */}
     </div>
   );
 }
