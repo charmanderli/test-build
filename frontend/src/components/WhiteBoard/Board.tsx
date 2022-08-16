@@ -1,3 +1,4 @@
+import { Button, ButtonGroup } from '@chakra-ui/react'
 import React from 'react';
 import { Socket, io } from 'socket.io-client';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
@@ -148,7 +149,7 @@ class Board extends React.Component<BoardProps, Record<string, any>> {
   render() {
     return (
       <div className='sketch' id='sketch'>
-        <button type='button' onClick={() => this.handleClearBoard()}>Clear board</button>
+        <Button className='clear-btn' colorScheme='red' size='sm' onClick={() => this.handleClearBoard()}>Clear</Button>
         <canvas className='board' id='board' />
       </div>
     );
