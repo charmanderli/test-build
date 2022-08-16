@@ -66,7 +66,8 @@ class Board extends React.Component<BoardProps, Record<string, never>> {
     const sketchSize = getComputedStyle(sketch);
     canvas.width = parseInt(sketchSize.getPropertyValue('width'), 10);
     canvas.height = parseInt(sketchSize.getPropertyValue('height'), 10);
-
+    console.log(canvas.width);
+    console.log(canvas.height);
     const mouse = { x: 0, y: 0 };
     const lastMouse = { x: 0, y: 0 };
 
@@ -91,8 +92,8 @@ class Board extends React.Component<BoardProps, Record<string, never>> {
       function (e) {
         lastMouse.x = mouse.x;
         lastMouse.y = mouse.y;
-        mouse.x = e.pageX - this.offsetLeft;
-        mouse.y = e.pageY - this.offsetTop;
+        mouse.x = e.pageX - this.offsetLeft - 35;
+        mouse.y = e.pageY - this.offsetTop - 35;
       },
       false,
     );
