@@ -1,13 +1,12 @@
-import { Button, ButtonGroup, Select, Input } from '@chakra-ui/react'
+import { Button, Input, Select } from '@chakra-ui/react';
 import React from 'react';
 import Board from './Board';
 import './ContainerStyle.css';
 
-
 type ContainerState = {
   penColor: string;
   penSize: number;
-  _socket: any;
+  socket: any;
 };
 // const styles: { [name: string]: React.CSSProperties } = {
 //   select: {
@@ -22,48 +21,50 @@ class WhiteBoardContainer extends React.Component<Record<string, any>, Container
     this.state = {
       penColor: 'black',
       penSize: 5,
-      _socket: socket,
+      socket,
     };
-
-
   }
 
-  changePenColor(event: React.ChangeEvent<HTMLInputElement>) {
+  changePenColor = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ penColor: event.target.value });
-  }
+  };
 
-  changePenSize(event: React.ChangeEvent<HTMLSelectElement>) {
+  changePenSize = (event: React.ChangeEvent<HTMLSelectElement>) => {
     this.setState({ penSize: Number(event.target.value) });
-  }
+  };
 
   render() {
-    const { penColor, penSize, _socket } = this.state;
+    // const { penColor, penSize, _socket } = this.state;
+    const { penColor, penSize, socket } = this.state;
 
     return (
       <div className='container'>
         <div className='tools-bar'>
           <div className='color-picker-container'>
             Select Pen Color: &nbsp;
-            <Input size='sm' type='color' value={penColor} onChange={this.changePenColor.bind(this)} />
+            <Input size='sm' type='color' value={penColor} onChange={this.changePenColor} />
           </div>
           <div className='brushsize-container'>
             Select Brush Size: &nbsp;
-            <Select size='sm' value={penSize} onChange={this.changePenSize.bind(this)}>
+            <Select size='sm' value={penSize} onChange={this.changePenSize}>
               <option value='1'>1</option>
               <option value='5'>5</option>
               <option value='10'>10</option>
             </Select>
           </div>
 
-          <Button className='eraser' size='sm'
-            onClick={() => { this.setState({ penColor: "white" }) }}
-          >Eraser</Button>
-
+          <Button
+            className='eraser'
+            size='sm'
+            onClick={() => {
+              this.setState({ penColor: 'white' });
+            }}>
+            Eraser
+          </Button>
         </div>
         <div className='board-container'>
-          <Board penColor={penColor} penSize={penSize} socket={_socket} />
+          <Board penColor={penColor} penSize={penSize} socket={socket} />
         </div>
-
       </div>
     );
   }
