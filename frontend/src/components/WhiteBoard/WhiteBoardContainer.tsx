@@ -6,7 +6,7 @@ import './ContainerStyle.css';
 type ContainerState = {
   penColor: string;
   penSize: number;
-  socket: any;
+  mySocket: any;
 };
 // const styles: { [name: string]: React.CSSProperties } = {
 //   select: {
@@ -21,7 +21,7 @@ class WhiteBoardContainer extends React.Component<Record<string, any>, Container
     this.state = {
       penColor: 'black',
       penSize: 5,
-      socket,
+      mySocket: socket,
     };
   }
 
@@ -34,19 +34,18 @@ class WhiteBoardContainer extends React.Component<Record<string, any>, Container
   };
 
   render() {
-    // const { penColor, penSize, _socket } = this.state;
-    const { penColor, penSize, socket } = this.state;
+    const { penColor, penSize, mySocket } = this.state;
 
     return (
       <div className='container'>
         <div className='tools-bar'>
           <div className='color-picker-container'>
             Pen Color: &nbsp;
-            <Input size='xs' type='color' value={penColor} onChange={this.changePenColor.bind(this)} />
+            <Input size='xs' type='color' value={penColor} onChange={(e) => { this.setState({ penColor: e.target.value }) }} />
           </div>
           <div className='brushsize-container'>
             Brush Size: &nbsp;
-            <Select size='xs' value={penSize} onChange={this.changePenSize.bind(this)}>
+            <Select size='xs' value={penSize} onChange={(e) => { this.setState({ penSize: parseInt(e.target.value, 10) }) }}>
 
               <option value='1'>1</option>
               <option value='5'>5</option>
@@ -64,9 +63,9 @@ class WhiteBoardContainer extends React.Component<Record<string, any>, Container
           </Button>
         </div>
         <div className='board-container'>
-          <Board penColor={penColor} penSize={penSize} socket={socket} />
-        </div>
-      </div>
+          <Board penColor={penColor} penSize={penSize} socket={mySocket} />
+        </div >
+      </div >
     );
   }
 }
