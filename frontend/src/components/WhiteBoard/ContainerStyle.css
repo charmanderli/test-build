@@ -7,32 +7,42 @@
   background-color: black;
   width: 900px;
   height: 700px;
+  /* align-items: center;
+  justify-content: center; */
+
 }
 
 .color-picker-container {
   text-align: center;
-  display: inline-block;
+  display: inline;
   color: white;
-  margin: 10px;
+  margin-left: 10px;
 }
 
 .brushsize-container {
-  display: inline-block;
+  display: inline;
   color: white;
-  margin: 10px;
+  margin-left: 10px;
 }
 
 .eraser{
 	display: inline;
-  margin: 10px;
   background: white;
 	color: black;
-	margin-left: 12px;
+  margin-top: 10px;
+  margin-left: 12px;
 } 
 
 
 .tools-bar {
+  margin-left: 20px;
+  width: 60%;
   text-align: center;
+
+  display: flex;
+  /* align-items: center; */
+  justify-content: space-between;
+  /* align-items: flex-end; */ 
 }
 
 .board-container {
@@ -46,16 +56,17 @@
 .select {
   background-color: white;
   color: black;
-  padding: 5;
   margin-top: 30;
   width: 5%;
 }
 
-
-/* .clear-btn{
-  display: flex;
-  align-items: flex-end;
-
-  background-color: pink;
-} */
+@media (max-width: 992px) {
+  .tools-bar {
+    display: flex;
+    width: 88%;
+  }
+  .container {
+    width: 80%;
+  }
+}
 
