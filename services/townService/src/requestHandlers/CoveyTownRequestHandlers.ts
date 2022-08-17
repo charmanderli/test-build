@@ -232,7 +232,7 @@ function townSocketAdapter(socket: Socket): CoveyTownListener {
     onBoardChanged(data: any){
       socket.emit("canvas-data", data);
       console.log("board change");
-    }
+    },
 
     onBoardClear(){
       socket.emit("clear", "clear");
@@ -285,7 +285,8 @@ export function townSubscriptionHandler(socket: Socket): void {
   });
 
   socket.on("canvas-data", (data:any) => {
-    socket.broadcast.emit("canvas-data", data);
+    townController.onBoardChanged(data);
+    // socket.broadcast.emit("canvas-data", data);
     console.log("board change");
   });
 

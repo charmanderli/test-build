@@ -43,12 +43,12 @@ class WhiteBoardContainer extends React.Component<Record<string, any>, Container
       <div className='container'>
         <div className='tools-bar'>
           <div className='color-picker-container'>
-            Select Pen Color: &nbsp;
-            <Input size='sm' type='color' value={penColor} onChange={this.changePenColor.bind(this)} />
+            Pen Color: &nbsp;
+            <Input size='xs' type='color' value={penColor} onChange={this.changePenColor.bind(this)} />
           </div>
           <div className='brushsize-container'>
-            Select Brush Size: &nbsp;
-            <Select size='sm' value={penSize} onChange={this.changePenSize.bind(this)}>
+            Brush Size: &nbsp;
+            <Select size='xs' value={penSize} onChange={this.changePenSize.bind(this)}>
               <option value='1'>1</option>
               <option value='5'>5</option>
               <option value='10'>10</option>

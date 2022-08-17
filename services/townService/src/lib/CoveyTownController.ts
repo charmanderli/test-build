@@ -249,6 +249,10 @@ export default class CoveyTownController {
     this._listeners.forEach(listener => listener.onChatMessage(message));
   }
 
+  onBoardChanged(data: any): void {
+    this._listeners.forEach(listener => listener.onBoardChanged(data));
+  }
+
   /**
    * Fetch a player's session based on the provided session token. Returns undefined if the
    * session token is not valid.
