@@ -29,6 +29,9 @@ function mockCoveyListener(): CoveyTownListener {
     onChatMessage(message: ChatMessage){
       mockCoveyListenerOtherFns(message);
     },
+    onBoardChanged(data:any) {
+      mockCoveyListenerOtherFns(data);
+    },
   };
 }
 
