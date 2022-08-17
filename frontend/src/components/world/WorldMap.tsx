@@ -795,15 +795,11 @@ export default function WorldMap(): JSX.Element {
   return (
     <div id='app-container'>
       {newConversationModal}
-      {/* <div id='whiteBoardModal'>{newWhiteBoardModal}</div> */}
       {newWhiteBoardModal}
       <div id='map-container' />
       <div id='social-container'>
         <SocialSidebar />
       </div>
-      {/* <div id='whiteboard-container'>
-        <WhiteBoardContainer />
-      </div> */}
     </div>
   );
 }
