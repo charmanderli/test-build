@@ -261,7 +261,7 @@ function townSocketAdapter(socket: Socket): CoveyTownListener {
 
     onBoardClear(){
       socket.emit("clear", "clear");
-    }
+    },
 
 
 
