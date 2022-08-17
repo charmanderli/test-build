@@ -49,5 +49,4 @@ export default interface CoveyTownListener {
 
   onBoardChanged(data: any): void;
   
-  onBoardClear():void;
 }
